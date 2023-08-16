@@ -1,4 +1,4 @@
-package br.com.turbi.turbi;
+package br.com.turbi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
