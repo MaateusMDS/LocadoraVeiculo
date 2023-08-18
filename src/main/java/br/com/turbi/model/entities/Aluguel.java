@@ -3,21 +3,25 @@ package br.com.turbi.model.entities;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"dataPedido", "dataEntrega", "dataDevolucao", "valorTotal"})
+@EqualsAndHashCode(exclude = {"cliente", "veiculo", "dataInicio", "dataTermino", "valorTotal"})
 public class Aluguel {
-    private Integer idAluguel;
-    @Getter @Setter
-    private Calendar dataPedido;
-    @Getter @Setter
-    private Date dataEntrega;
-    @Getter @Setter
-    private Date dataDevolucao;
-    @Getter @Setter
-    private BigDecimal valorTotal;
+	private Integer idAluguel;
+	@Getter @Setter
+	private Cliente cliente;
+	@Getter @Setter
+	private Veiculo veiculo;
+	@Getter @Setter
+	private LocalDate dataInicio;
+	@Getter @Setter
+	private LocalDate dataTermino;
+	@Getter @Setter
+	private BigDecimal valorTotal;
+
+	public BigDecimal calcularValorAluguel() {
+		return null;
+	}
 
 }
