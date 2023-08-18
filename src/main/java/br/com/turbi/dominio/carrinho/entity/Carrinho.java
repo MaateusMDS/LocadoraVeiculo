@@ -1,5 +1,7 @@
-package br.com.turbi.model.entities;
+package br.com.turbi.dominio.carrinho.entity;
 
+import br.com.turbi.dominio.aluguel.entity.Aluguel;
+import br.com.turbi.dominio.cliente.entity.Cliente;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -15,7 +17,9 @@ public class Carrinho {
 	private BigDecimal custoTotal;
 
 	public BigDecimal calcularValorCarrinho() {
-		return null;
-	}
-
+		aluguel.forEach(aluguel -> {
+			custoTotal.add(aluguel.calcularValorAluguel());
+		});
+		return custoTotal;
+	};
 }

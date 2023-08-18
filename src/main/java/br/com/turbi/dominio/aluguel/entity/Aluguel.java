@@ -1,5 +1,7 @@
-package br.com.turbi.model.entities;
+package br.com.turbi.dominio.aluguel.entity;
 
+import br.com.turbi.dominio.cliente.entity.Cliente;
+import br.com.turbi.dominio.veiculo.entity.Veiculo;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -8,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"cliente", "veiculo", "dataInicio", "dataTermino", "valorTotal"})
 public class Aluguel {
-	private Integer idAluguel;
+	private long id;
 	@Getter @Setter
 	private Cliente cliente;
 	@Getter @Setter
@@ -21,7 +23,8 @@ public class Aluguel {
 	private BigDecimal valorTotal;
 
 	public BigDecimal calcularValorAluguel() {
-		return null;
-	}
+
+		return veiculo.getValorDiaria();
+	};
 
 }

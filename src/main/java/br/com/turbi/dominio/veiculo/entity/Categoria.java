@@ -1,4 +1,4 @@
-package br.com.turbi.model.entities;
+package br.com.turbi.dominio.veiculo.entity;
 
 public enum Categoria {
     HATCH_COMPACTO,

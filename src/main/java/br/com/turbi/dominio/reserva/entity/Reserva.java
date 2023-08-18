@@ -1,5 +1,7 @@
-package br.com.turbi.model.entities;
+package br.com.turbi.dominio.reserva.entity;
 
+import br.com.turbi.dominio.aluguel.entity.Aluguel;
+import br.com.turbi.dominio.cliente.entity.Cliente;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
