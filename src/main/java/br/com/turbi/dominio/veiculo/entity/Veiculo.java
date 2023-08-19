@@ -18,6 +18,7 @@ public class Veiculo {
 	@GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE, generator = "SQ_TURBI_VEICULO")
 	@SequenceGenerator(name = "SQ_TURBI_VEICULO", sequenceName = "SQ_TURBI_VEICULO", allocationSize = 1)
 	@Column(name = "ID_VEICULO")
+	@Getter
 	private long id;
 	@Getter @Setter
 	@Column(name = "DS_FABRICANTE")
