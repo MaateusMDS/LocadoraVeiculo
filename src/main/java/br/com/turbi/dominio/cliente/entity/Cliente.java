@@ -2,6 +2,7 @@ package br.com.turbi.dominio.cliente.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
 @NoArgsConstructor

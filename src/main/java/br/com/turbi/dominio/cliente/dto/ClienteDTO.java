@@ -2,6 +2,7 @@ package br.com.turbi.dominio.cliente.dto;
 
 import br.com.turbi.dominio.cliente.entity.Cliente;
 import br.com.turbi.dominio.cliente.entity.Sexo;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Relation(collectionRelation = "clientes")
 public record ClienteDTO(
         long id,
         String nome,
