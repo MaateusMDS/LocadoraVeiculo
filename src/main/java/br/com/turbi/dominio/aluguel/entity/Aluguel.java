@@ -18,6 +18,7 @@ public class Aluguel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_TURBI_ALUGUEL")
 	@SequenceGenerator(name = "SQ_TURBI_ALUGUEL", sequenceName = "SQ_TURBI_ALUGUEL", allocationSize = 1)
+	@Column(name = "ID_ALUGUEL")
 	private long id;
 	@Getter @Setter
 	@ManyToOne(
