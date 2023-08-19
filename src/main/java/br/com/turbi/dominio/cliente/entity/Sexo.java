@@ -18,20 +18,29 @@ public enum Sexo {
         return sigla;
     }
 
+    public Sexo setSigla(String sigla) {
+        this.sigla = sigla;
+        return this;
+    }
+
     public String getSexo() {
         return sexo;
     }
 
-    @JsonCreator
-    public static Sexo fromString(String value) {
-        if ("Masculino".equalsIgnoreCase(value) || "M".equalsIgnoreCase(value)) {
-            return MASCULINO;
-        } else if ("Feminino".equalsIgnoreCase(value) || "F".equalsIgnoreCase(value)) {
-            return FEMININO;
-        }
-        throw new IllegalArgumentException("Valor de sexo inválido: " + value);
+    public Sexo setSexo(String sexo) {
+        this.sexo = sexo;
+        return this;
     }
 
+    @JsonCreator
+    public static Sexo fromString(String param) {
+        for (Sexo sexo : Sexo.values()) {
+            if (sexo.name().equalsIgnoreCase(param)) {
+                return sexo;
+            }
+        }
+        return null;
+    }
     public String toString(){
         return sigla.toUpperCase();
     }

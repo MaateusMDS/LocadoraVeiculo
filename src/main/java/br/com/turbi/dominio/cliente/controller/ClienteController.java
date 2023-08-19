@@ -3,42 +3,39 @@ package br.com.turbi.dominio.cliente.controller;
 import br.com.turbi.dominio.cliente.dto.ClienteDTO;
 import br.com.turbi.dominio.cliente.entity.Cliente;
 import br.com.turbi.dominio.cliente.repository.ClienteRepository;
-import com.mysql.cj.xdevapi.Client;
 import jakarta.transaction.Transactional;
-import jakarta.websocket.ClientEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.server.core.Relation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteRepository repo;
 
     @GetMapping()
     public ResponseEntity<CollectionModel<EntityModel<ClienteDTO>>> findAll() {
-        Collection<Cliente> clientes = clienteRepository.findAll();
+        Collection<Cliente> clientes = repo.findAll();
         return ResponseEntity.ok(toCollectionHATEOAS(clientes));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<ClienteDTO>> findById(@PathVariable Long id) {
-        var cliente = clienteRepository.findById(id);
+        var cliente = repo.findById(id);
         if (cliente.isPresent()) {
             EntityModel<ClienteDTO> entityModel = toHATEOAS(cliente.get());
             return ResponseEntity.ok(entityModel);
@@ -49,7 +46,7 @@ public class ClienteController {
     @Transactional
     @PostMapping()
     public ResponseEntity<EntityModel<ClienteDTO>> save(@RequestBody ClienteDTO dto, UriComponentsBuilder ucBuilder) {
-        var cliente = clienteRepository.save(dto.toModel());
+        var cliente = repo.save(dto.toModel());
         var uri = ucBuilder.path("/{id}").buildAndExpand(cliente.getId()).toUri();
         return ResponseEntity.created(uri).body(toHATEOAS(cliente));
     }
@@ -57,7 +54,7 @@ public class ClienteController {
     @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<ClienteDTO> update(@PathVariable Long id, @RequestBody ClienteDTO c){
-        Optional<Cliente> cliente = clienteRepository.findById(id);
+        Optional<Cliente> cliente = repo.findById(id);
 
         if (cliente.isPresent()) {
             Cliente clienteAtualizado = cliente.get();
@@ -96,10 +93,10 @@ public class ClienteController {
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteById(@PathVariable Long id) {
-        var cliente = clienteRepository.findById(id);
+    public ResponseEntity<Object> deleteById(@PathVariable Long id) {
+        var cliente = repo.findById(id);
         if (cliente.isPresent()) {
-            clienteRepository.deleteById(id);
+            repo.deleteById(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
