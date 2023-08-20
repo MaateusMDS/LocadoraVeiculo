@@ -19,6 +19,7 @@ public class Aluguel {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_TURBI_ALUGUEL")
 	@SequenceGenerator(name = "SQ_TURBI_ALUGUEL", sequenceName = "SQ_TURBI_ALUGUEL", allocationSize = 1)
 	@Column(name = "ID_ALUGUEL")
+	@Getter
 	private long id;
 	@Getter @Setter
 	@ManyToOne(
@@ -53,6 +54,6 @@ public class Aluguel {
 	public BigDecimal calcularValorAluguel() {
 
 		return veiculo.getValorDiaria();
-	};
+	}
 
 }
