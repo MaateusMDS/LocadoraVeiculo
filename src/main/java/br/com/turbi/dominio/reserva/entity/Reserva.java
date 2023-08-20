@@ -17,6 +17,7 @@ public class Reserva {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_TURBI_RESERVA")
 	@SequenceGenerator(name = "SQ_TURBI_RESERVA", sequenceName = "SQ_TURBII_RESERVA", allocationSize = 1)
 	@Column(name = "ID_RESERVA")
+	@Getter @Setter
 	private long id;
 	@Getter @Setter
 	@OneToMany(
