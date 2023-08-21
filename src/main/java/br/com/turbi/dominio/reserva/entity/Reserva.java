@@ -5,7 +5,6 @@ import br.com.turbi.dominio.cliente.entity.Cliente;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"aluguel", "cliente"})
@@ -19,16 +18,17 @@ public class Reserva {
 	@Column(name = "ID_RESERVA")
 	@Getter @Setter
 	private long id;
+
 	@Getter @Setter
-	@OneToMany(
+	@ManyToOne(
 			fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}
 	)
 	@JoinColumn(
-			name = "ID_RESERVA",
-			referencedColumnName = "ID_RESERVA",
+			name = "ID_ALUGUEL",
+			referencedColumnName = "ID_ALUGUEL",
 			foreignKey = @ForeignKey(name = "FK_ALUGUEL_RESERVA")
 	)
-	private Set<Aluguel> aluguel;
+	private Aluguel aluguel;
 
 	@Getter @Setter
 	@ManyToOne(
@@ -40,5 +40,4 @@ public class Reserva {
 			foreignKey = @ForeignKey(name = "FK_CLIENTE_RESERVA")
 	)
 	private Cliente cliente;
-
 }

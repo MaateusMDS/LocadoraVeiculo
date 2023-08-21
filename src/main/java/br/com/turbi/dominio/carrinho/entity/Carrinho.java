@@ -7,21 +7,30 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Set;
-@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"cliente", "aluguel", "custoTotal"})
 
 @Entity
-@Table(name = "TB_TURBI_CARRINHO")
+@Table(name = "TB_TURBI_CARRINHO", uniqueConstraints = {
+		@UniqueConstraint(name = "UK_CARRINHO_CLIENTE", columnNames = {"ID_CLIENTE", "ID_CARRINHO"})
+})
+
 public class Carrinho {
+
+	public Carrinho() {
+		this.custoTotal = BigDecimal.ZERO;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_TURBI_CARRINHO")
 	@SequenceGenerator(name = "SQ_TURBI_CARRINHO", sequenceName = "SQ_TURBI_CARRINHO", allocationSize = 1)
 	@Column(name = "ID_CARRINHO")
+	@Getter
 	private long id;
-	@Getter @Setter
+	@Getter
+	@Setter
 	@ManyToOne(
-			fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+			fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH}
 	)
 	@JoinColumn(
 			name = "ID_CLIENTE",
@@ -29,8 +38,9 @@ public class Carrinho {
 			foreignKey = @ForeignKey(name = "FK_CARRINHO_CLIENTE")
 	)
 	private Cliente cliente;
-	@Getter @Setter
-	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@Getter
+	@Setter
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.MERGE})
 	@JoinTable(
 			name = "TB_CARRINHO_ALUGUEL",
 			joinColumns = {
@@ -49,14 +59,16 @@ public class Carrinho {
 			}
 	)
 	private Set<Aluguel> aluguel;
-	@Getter @Setter
-	@Column(name = "CT_TOTAL")
+	@Getter
+	@Setter
+	@Column(name = "VL_CUSTO_TOTAL")
 	private BigDecimal custoTotal;
 
 	public BigDecimal calcularValorCarrinho() {
-		aluguel.forEach(aluguel -> {
-			custoTotal.add(aluguel.calcularValorAluguel());
-		});
+		custoTotal = BigDecimal.ZERO;
+		for (Aluguel a : aluguel) {
+			custoTotal = custoTotal.add(a.calcularValorAluguel());
+		}
 		return custoTotal;
-	};
+	}
 }

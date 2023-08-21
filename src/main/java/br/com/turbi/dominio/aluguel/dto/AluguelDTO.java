@@ -28,19 +28,19 @@ public record AluguelDTO(
         return a.stream().map(AluguelDTO::of).collect(Collectors.toCollection(LinkedHashSet<AluguelDTO>::new));
     }
 
-    public static AluguelDTO of(Long id) {
+    public static AluguelDTO of(Long id, BigDecimal valorTotal) {
         return new AluguelDTO(
                 id,
                 null,
                 null,
                 null,
                 null,
-                null
+                valorTotal
         );
     }
 
     public static AluguelDTO of(Aluguel a) {
-        return new AluguelDTO(a.getId(), a.getCliente(), a.getVeiculo(), a.getDataInicio(), a.getDataTermino(), a.getValorTotal());
+        return new AluguelDTO(a.getId(), a.getCliente(), a.getVeiculo(), a.getDataInicio(), a.getDataTermino(), a.calcularValorAluguel());
     }
 
     public Aluguel toModel() {

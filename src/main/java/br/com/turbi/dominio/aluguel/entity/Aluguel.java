@@ -7,13 +7,17 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-@NoArgsConstructor
+
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"cliente", "veiculo", "dataInicio", "dataTermino", "valorTotal"})
 
 @Entity
 @Table(name = "TB_TURBI_ALUGUEL")
 public class Aluguel {
+
+	public Aluguel() {
+		this.valorTotal = BigDecimal.ZERO;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_TURBI_ALUGUEL")
@@ -52,8 +56,9 @@ public class Aluguel {
 	private BigDecimal valorTotal;
 
 	public BigDecimal calcularValorAluguel() {
-
-		return veiculo.getValorDiaria();
+		long dias = dataInicio.until(dataTermino).getDays();
+		valorTotal = veiculo.getValorDiaria().multiply(BigDecimal.valueOf(dias));
+		return valorTotal;
 	}
 
 }
