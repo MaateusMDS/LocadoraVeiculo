@@ -2,7 +2,6 @@ package br.com.turbi.dominio.cliente.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
 @NoArgsConstructor
@@ -10,7 +9,9 @@ import java.time.LocalDate;
 @EqualsAndHashCode(exclude = {"nome", "dataNascimento", "cpf", "cnh", "email", "senha", "sexo"})
 
 @Entity
-@Table(name = "TB_TURBI_CLIENTE")
+@Table(name = "TB_TURBI_CLIENTE", uniqueConstraints = {
+		@UniqueConstraint(name = "UK_CLIENTE", columnNames = {"NR_CPF", "NR_CNH", "DS_EMAIL"})
+})
 public class Cliente {
 
 	@Getter

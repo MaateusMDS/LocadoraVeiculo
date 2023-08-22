@@ -1,11 +1,13 @@
 package br.com.turbi.dominio.aluguel.controller;
 
 import br.com.turbi.dominio.aluguel.dto.AluguelDTO;
+import br.com.turbi.dominio.aluguel.dto.AluguelPutDTO;
 import br.com.turbi.dominio.aluguel.entity.Aluguel;
 import br.com.turbi.dominio.aluguel.repository.AluguelRepository;
 import br.com.turbi.dominio.cliente.repository.ClienteRepository;
 import br.com.turbi.dominio.veiculo.repository.VeiculoRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -71,31 +74,29 @@ public class AluguelController {
 
     @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity<AluguelDTO> update(@PathVariable Long id, @RequestBody AluguelDTO c){
+    public ResponseEntity<AluguelPutDTO> update(@PathVariable Long id, @RequestBody @Valid AluguelPutDTO dto){
         Optional<Aluguel> aluguel = repo.findById(id);
 
         if (aluguel.isPresent()) {
             Aluguel aluguelAtualizado = aluguel.get();
 
-            if (Objects.nonNull(c.cliente())) {
-                aluguelAtualizado.setCliente(c.cliente());
+            if (Objects.nonNull(dto.dataInicio())) {
+                aluguelAtualizado.setDataInicio(dto.dataInicio());
             }
 
-            if (Objects.nonNull(c.veiculo())) {
-                aluguelAtualizado.setVeiculo(c.veiculo());
+            if (Objects.nonNull(dto.dataTermino())) {
+                aluguelAtualizado.setDataTermino(dto.dataTermino());
             }
 
-            if (Objects.nonNull(c.dataInicio())) {
-                aluguelAtualizado.setDataInicio(c.dataInicio());
+            if (Objects.nonNull(dto.valorTotal())) {
+                aluguelAtualizado.setValorTotal(dto.valorTotal());
             }
 
-            if (Objects.nonNull(c.dataTermino())) {
-                aluguelAtualizado.setDataTermino(c.dataTermino());
-            }
-            return ResponseEntity.ok(AluguelDTO.of(aluguelAtualizado));
+            return ResponseEntity.ok(AluguelPutDTO.of(aluguelAtualizado));
         }
         return ResponseEntity.notFound().build();
     }
+
 
     @Transactional
     @DeleteMapping("/{id}")

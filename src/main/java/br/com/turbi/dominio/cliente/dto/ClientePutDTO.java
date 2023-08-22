@@ -15,30 +15,25 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Relation(collectionRelation = "clientes")
-public record ClienteDTO(
+public record ClientePutDTO(
         long id,
-        @NotBlank(message = "O campo nome é obrigatório")
         String nome,
-        @NotNull(message = "O campo data de nascimento é obrigatório") @Past(message = "A data de nascimento deve ser anterior a data atual")
+        @Past(message = "A data de nascimento deve ser anterior a data atual")
         LocalDate dataNascimento,
-        @NotBlank(message = "O campo CPF é obrigatório")
         String cpf,
-        @NotBlank(message = "O campo CNH é obrigatório")
         String cnh,
-        @NotBlank(message = "O campo email é obrigatório") @Email(message = "O campo email é obrigatório")
+        @Email(message = "O campo email está inválido")
         String email,
-        @NotBlank(message = "O campo senha é obrigatório")
         String senha,
-        @NotNull(message = "O campo sexo é obrigatório")
         Sexo sexo
 ) {
 
-    public static Set<ClienteDTO> of(Collection<Cliente> c) {
-        return c.stream().map(ClienteDTO::of).collect(Collectors.toCollection(LinkedHashSet<ClienteDTO>::new));
+    public static Set<ClientePutDTO> of(Collection<Cliente> c) {
+        return c.stream().map(ClientePutDTO::of).collect(Collectors.toCollection(LinkedHashSet<ClientePutDTO>::new));
     }
 
-    public static ClienteDTO of(Long id) {
-        return new ClienteDTO(
+    public static ClientePutDTO of(Long id) {
+        return new ClientePutDTO(
                 id,
                 "",
                 null,
@@ -50,8 +45,8 @@ public record ClienteDTO(
         );
     }
 
-    public static ClienteDTO of(Cliente c) {
-        return new ClienteDTO(c.getId(), c.getNome(), c.getDataNascimento(), c.getCpf(), c.getCnh(), c.getEmail(), c.getSenha(), c.getSexo());
+    public static ClientePutDTO of(Cliente c) {
+        return new ClientePutDTO(c.getId(), c.getNome(), c.getDataNascimento(), c.getCpf(), c.getCnh(), c.getEmail(), c.getSenha(), c.getSexo());
     }
 
     public Cliente toModel(){

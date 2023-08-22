@@ -57,8 +57,8 @@ public class Aluguel {
 
 	public BigDecimal calcularValorAluguel() {
 		long dias = dataInicio.until(dataTermino).getDays();
-		valorTotal = veiculo.getValorDiaria().multiply(BigDecimal.valueOf(dias));
-		return valorTotal;
+		this.valorTotal = veiculo.getValorDiaria().multiply(BigDecimal.valueOf(dias));
+		return this.valorTotal;
 	}
 
 }

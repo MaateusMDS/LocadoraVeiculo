@@ -40,14 +40,8 @@ public class CarrinhoController {
     private AluguelRepository repoAluguel;
 
     @GetMapping()
-    public ResponseEntity<CollectionModel<EntityModel<CarrinhoDTO>>> findAll() {
-        Collection<Carrinho> carrinhos = repo.findAll();
-        return ResponseEntity.ok(toCollectionHATEOAS(carrinhos));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<CarrinhoDTO>> findById(@PathVariable Long id) {
-        var carrinho = repo.findById(id);
+    public ResponseEntity<EntityModel<CarrinhoDTO>> find(@PathVariable("cliente") Long id) {
+        var carrinho = repo.findByClienteId(id);
         if (carrinho.isPresent()) {
             EntityModel<CarrinhoDTO> entityModel = toHATEOAS(carrinho.get());
             return ResponseEntity.ok(entityModel);
@@ -69,15 +63,14 @@ public class CarrinhoController {
 
         Set<Aluguel> alugueis = dto.aluguel().stream()
                 .map(aluguel -> repoAluguel.findById(aluguel.getId()).orElse(null))
-                .filter(Objects::nonNull) // Filtra objetos não nulos
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        // Se o carrinho não existir, configure os atributos
         if (carrinho.getId() == 0) {
             carrinho.setCliente(cliente);
             carrinho.setAluguel(alugueis);
             carrinho.setCustoTotal(carrinho.calcularValorCarrinho());
-        } else { // Se o carrinho já existir, atualize os atributos
+        } else {
             carrinho.getAluguel().addAll(alugueis);
             carrinho.calcularValorCarrinho();
         }
@@ -90,41 +83,34 @@ public class CarrinhoController {
 
 
     @Transactional
-    @PutMapping("/{id}")
-    public ResponseEntity<CarrinhoDTO> update(@PathVariable Long id, @RequestBody CarrinhoDTO c) {
-        Optional<Carrinho> carrinho = repo.findById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteAluguel (@PathVariable("cliente") Long idCliente, @PathVariable("id") Long idAluguel) {
+        var carrinho = repo.findByClienteId(idCliente);
 
         if (carrinho.isPresent()) {
-            Carrinho carrinhoAtualizado = carrinho.get();
-
-            if (Objects.nonNull(c.cliente())) {
-                carrinhoAtualizado.setCliente(c.cliente());
+            var aluguel = repoAluguel.findById(idAluguel);
+            if (aluguel.isPresent()) {
+                carrinho.get().getAluguel().remove(aluguel.get());
+                repo.save(carrinho.get());
+                return ResponseEntity.noContent().build();
             }
-
-            if (Objects.nonNull(c.aluguel())) {
-                carrinhoAtualizado.setAluguel(c.aluguel());
-            }
-
-            return ResponseEntity.ok(CarrinhoDTO.of(carrinhoAtualizado));
         }
+
         return ResponseEntity.notFound().build();
     }
+
 
     @Transactional
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteById(@PathVariable Long id) {
-        var carrinho = repo.findById(id);
+    @DeleteMapping()
+    public ResponseEntity<Object> delete(@PathVariable("cliente") Long id) {
+        var carrinho = repo.findByClienteId(id);
+
         if (carrinho.isPresent()) {
-            repo.deleteById(id);
+            repo.deleteByClienteId(id);
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.notFound().build();
-    }
 
-    private CollectionModel<EntityModel<CarrinhoDTO>> toCollectionHATEOAS(Collection<Carrinho> carrinhos) {
-        var dtos = CollectionModel.of(carrinhos.stream().map(this::toHATEOAS).collect(Collectors.toSet()));
-        dtos.add(linkTo(methodOn(CarrinhoController.class).findAll()).withSelfRel());
-        return dtos;
+        return ResponseEntity.notFound().build();
     }
 
     private EntityModel<CarrinhoDTO> toHATEOAS(Carrinho carrinho) {
@@ -133,12 +119,12 @@ public class CarrinhoController {
         model = EntityModel.of(CarrinhoDTO.of(carrinho))
                 .add(linkTo(
                         methodOn(CarrinhoController.class)
-                                .findById(carrinho.getId()))
+                                .find(carrinho.getId()))
                         .withSelfRel()
                         .withTitle(carrinho.getCliente().getNome())
                 );
 
-        model.add(linkTo(methodOn(CarrinhoController.class).findAll()).withRel(IanaLinkRelations.COLLECTION));
+        model.add(linkTo(methodOn(CarrinhoController.class)).withRel(IanaLinkRelations.COLLECTION));
         return model;
     }
 

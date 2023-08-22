@@ -11,7 +11,9 @@ import java.util.ArrayList;
 @EqualsAndHashCode(exclude = {"fabricante", "modelo", "categoria", "acessorios", "valorDiaria", "descricao"})
 
 @Entity
-@Table(name = "TB_TURBI_VEICULO")
+@Table(name = "TB_TURBI_VEICULO", uniqueConstraints = {
+		@UniqueConstraint(name = "UK_VEICULO", columnNames = {"DS_PLACA", "DS_CHASSI"})
+})
 public class Veiculo {
 
 	@Id

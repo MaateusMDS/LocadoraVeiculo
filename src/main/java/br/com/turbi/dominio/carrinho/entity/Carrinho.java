@@ -65,10 +65,10 @@ public class Carrinho {
 	private BigDecimal custoTotal;
 
 	public BigDecimal calcularValorCarrinho() {
-		custoTotal = BigDecimal.ZERO;
-		for (Aluguel a : aluguel) {
-			custoTotal = custoTotal.add(a.calcularValorAluguel());
+		this.custoTotal = BigDecimal.ZERO;
+		for (Aluguel a : this.aluguel) {
+			this.custoTotal = this.custoTotal.add(a.calcularValorAluguel());
 		}
-		return custoTotal;
+		return this.custoTotal;
 	}
 }

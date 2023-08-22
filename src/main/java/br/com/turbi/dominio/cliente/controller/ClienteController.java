@@ -1,9 +1,11 @@
 package br.com.turbi.dominio.cliente.controller;
 
 import br.com.turbi.dominio.cliente.dto.ClienteDTO;
+import br.com.turbi.dominio.cliente.dto.ClientePutDTO;
 import br.com.turbi.dominio.cliente.entity.Cliente;
 import br.com.turbi.dominio.cliente.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -45,7 +47,7 @@ public class ClienteController {
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<EntityModel<ClienteDTO>> save(@RequestBody ClienteDTO dto, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<EntityModel<ClienteDTO>> save(@RequestBody @Valid ClienteDTO dto, UriComponentsBuilder ucBuilder) {
         var cliente = repo.save(dto.toModel());
         var uri = ucBuilder.path("/{id}").buildAndExpand(cliente.getId()).toUri();
         return ResponseEntity.created(uri).body(toHATEOAS(cliente));
@@ -53,7 +55,7 @@ public class ClienteController {
 
     @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteDTO> update(@PathVariable Long id, @RequestBody ClienteDTO c){
+    public ResponseEntity<ClienteDTO> update(@PathVariable Long id, @RequestBody @Valid ClientePutDTO c){
         Optional<Cliente> cliente = repo.findById(id);
 
         if (cliente.isPresent()) {

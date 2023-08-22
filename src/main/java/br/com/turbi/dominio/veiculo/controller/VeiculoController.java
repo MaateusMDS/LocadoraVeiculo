@@ -1,9 +1,15 @@
 package br.com.turbi.dominio.veiculo.controller;
 
+import br.com.turbi.dominio.cliente.dto.ClienteDTO;
+import br.com.turbi.dominio.cliente.dto.ClientePutDTO;
+import br.com.turbi.dominio.cliente.entity.Cliente;
+import br.com.turbi.dominio.veiculo.dto.ModeloDTO;
 import br.com.turbi.dominio.veiculo.dto.VeiculoDTO;
+import br.com.turbi.dominio.veiculo.dto.VeiculoPutDTO;
 import br.com.turbi.dominio.veiculo.entity.Veiculo;
 import br.com.turbi.dominio.veiculo.repository.VeiculoRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -45,7 +51,7 @@ public class VeiculoController {
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<EntityModel<VeiculoDTO>> save(@RequestBody VeiculoDTO dto, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<EntityModel<VeiculoDTO>> save(@Valid @RequestBody VeiculoDTO dto, UriComponentsBuilder ucBuilder) {
         var veiculo = repo.save(dto.toModel());
         var uri = ucBuilder.path("/{id}").buildAndExpand(veiculo.getId()).toUri();
         return ResponseEntity.created(uri).body(toHATEOAS(veiculo));
@@ -53,49 +59,45 @@ public class VeiculoController {
 
     @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity<VeiculoDTO> update(@PathVariable Long id, @RequestBody VeiculoDTO v){
+    public ResponseEntity<VeiculoDTO> update(@PathVariable Long id, @RequestBody @Valid VeiculoPutDTO c){
         Optional<Veiculo> veiculo = repo.findById(id);
 
         if (veiculo.isPresent()) {
-            Veiculo veiculoAtualizado = veiculo.get();
+            Veiculo clienteAtualizado = veiculo.get();
 
-
-            if (Objects.nonNull(v.fabricante())) {
-                veiculoAtualizado.setFabricante(v.fabricante());
+            if (Objects.nonNull(c.modelo().cor())) {
+                clienteAtualizado.getModelo().setCor(c.modelo().cor());
             }
 
-            if (Objects.nonNull(v.modelo())) {
-                veiculoAtualizado.setModelo(v.modelo().toModel());
+            if (Objects.nonNull(c.modelo().placa())) {
+                clienteAtualizado.getModelo().setPlaca(c.modelo().placa());
             }
 
-            if (Objects.nonNull(v.categoria())) {
-                veiculoAtualizado.setCategoria(v.categoria());
+            if (Objects.nonNull(c.modelo().chassi())) {
+                clienteAtualizado.getModelo().setChassi(c.modelo().chassi());
             }
 
-            if (Objects.nonNull(v.acessorios())) {
-                veiculoAtualizado.setAcessorios(v.acessorios());
+            if (Objects.nonNull(c.fabricante())) {
+                clienteAtualizado.setFabricante(c.fabricante());
             }
 
-            if (Objects.nonNull(v.valorDiaria())) {
-                veiculoAtualizado.setValorDiaria(v.valorDiaria());
+            if (Objects.nonNull(c.categoria())) {
+                clienteAtualizado.setCategoria(c.categoria());
             }
 
-            if (Objects.nonNull(v.descricao())) {
-                veiculoAtualizado.setDescricao(v.descricao());
+            if (Objects.nonNull(c.acessorios())) {
+                clienteAtualizado.setAcessorios(c.acessorios());
             }
 
-            if (Objects.nonNull(v.modelo().cor())) {
-                veiculoAtualizado.getModelo().setCor(v.modelo().cor());
+            if (Objects.nonNull(c.descricao())) {
+                clienteAtualizado.setDescricao(c.descricao());
             }
 
-            if (Objects.nonNull(v.modelo().chassi())) {
-                veiculoAtualizado.getModelo().setChassi(v.modelo().chassi());
+            if (Objects.nonNull(c.valorDiaria())) {
+                clienteAtualizado.setValorDiaria(c.valorDiaria());
             }
 
-            if (Objects.nonNull(v.modelo().placa())) {
-                veiculoAtualizado.getModelo().setPlaca(v.modelo().placa());
-            }
-            return ResponseEntity.ok(VeiculoDTO.of(veiculoAtualizado));
+            return ResponseEntity.ok(VeiculoDTO.of(clienteAtualizado));
         }
         return ResponseEntity.notFound().build();
     }
